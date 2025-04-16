@@ -11,6 +11,8 @@ namespace Quiz.Models
 
         [ForeignKey("Exam")]
         public int ExamID { get; set; }
+        public double Points { get; set; }
+
 
         public Question Question { get; set; }
         public Exam Exam { get; set; }

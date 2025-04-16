@@ -12,7 +12,6 @@ namespace Quiz.Models
         public string Text { get; set; }
         public string Type { get; set; }
         public string CorrectAnswer { get; set; }
-        public double Points { get; set; }
 
         public QuestionBank QuestionBank { get; set; }
 

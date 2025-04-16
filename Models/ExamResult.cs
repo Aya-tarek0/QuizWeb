@@ -15,6 +15,7 @@ namespace Quiz.Models
         public double Score { get; set; }
         public DateTime Date { get; set; }
 
+        public string FeedBack { set; get; }
         public Exam Exam { get; set; }
         public ApplicationUser User { get; set; }
 
