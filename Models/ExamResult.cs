@@ -12,10 +12,10 @@ namespace Quiz.Models
         [ForeignKey("User")]
         public string UserID { get; set; }
 
-        public double Score { get; set; }
+        public double? Score { get; set; }
         public DateTime Date { get; set; }
 
-        public string FeedBack { set; get; }
+        public string? FeedBack { set; get; }
         public Exam Exam { get; set; }
         public ApplicationUser User { get; set; }
 

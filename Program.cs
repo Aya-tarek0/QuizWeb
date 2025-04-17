@@ -1,7 +1,9 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Quiz.Interface;
 using Quiz.Models;
+using Quiz.Repository;
 
 namespace Quiz
 {
@@ -17,7 +19,11 @@ namespace Quiz
             builder.Services.AddDbContext<QuizContext>(option => {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("db"));
             });
+
+            builder.Services.AddScoped<IExamResultRepository, ExamResultRepository>();
+
             builder.Services.AddControllers();
+            
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
