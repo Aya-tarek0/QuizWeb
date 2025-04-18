@@ -18,7 +18,7 @@ namespace Quiz.Repository
         #region GetAllResultsForExam 
         public IEnumerable<ResultDTO> GetAllResultsForExam()
         {
-            List<ResultDTO> results = quizContext.ExamResults.Include(e=>e.Exam).Include(e => e.User).Select(
+            List<ResultDTO> results = quizContext.ExamResults.Include(e=>e.Exam).Include(e => e.User).Include(e=>e.UsersAnswers).Select(
                 e=> new ResultDTO
                 {
                     ExamID = e.ExamID,
@@ -28,7 +28,8 @@ namespace Quiz.Repository
                     date = e.Date,
                     score = e.Score,
                     FeedBack = e.FeedBack,
-                    CreatorID = e.Exam.CreatedBy
+                    CreatorID = e.Exam.CreatedBy,
+                    userAnswers = e.UsersAnswers
                    
                     
                 }).ToList();
@@ -41,7 +42,7 @@ namespace Quiz.Repository
         #region Get Result For Exam To User
         public IEnumerable<ResultDTO> GetResultByUserId()
         {
-           List<ResultDTO>  results= quizContext.ExamResults.Include(e=> e.Exam).Include(e=>e.User).Select(e=> new ResultDTO
+           List<ResultDTO>  results= quizContext.ExamResults.Include(e=> e.Exam).Include(e=>e.User).Include(e=>e.UsersAnswers).Select(e=> new ResultDTO
            {
                CreatorID = e.Exam.CreatedBy,
                ExamID = e.ExamID,
@@ -50,7 +51,8 @@ namespace Quiz.Repository
                FeedBack =e.FeedBack,
                userid = e.UserID,
                UseName = e.User.UserName,
-               score = e.Score
+               score = e.Score,
+               userAnswers = e.UsersAnswers
                
 
            }).ToList();
@@ -65,7 +67,7 @@ namespace Quiz.Repository
         #region Get one Result to User
         public ResultDTO GetOneResultByUserID(string UserID , int ExamID)
         {
-            ResultDTO result = quizContext.ExamResults.Include(e => e.Exam).Include(e => e.User).Select(i => new ResultDTO
+            ResultDTO result = quizContext.ExamResults.Include(e => e.Exam).Include(e => e.User).Include(e=>e.UsersAnswers).Select(i => new ResultDTO
             {
                 CreatorID = i.Exam.CreatedBy,
                 ExamID = i.ExamID,
@@ -74,7 +76,9 @@ namespace Quiz.Repository
                 FeedBack = i.FeedBack,
                 userid = i.UserID,
                 UseName = i.User.UserName,
-                score = i.Score
+                score = i.Score,
+                userAnswers = i.UsersAnswers
+               
             }).FirstOrDefault(e => e.userid == UserID && e.ExamID == ExamID);
 
             return result;
