@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quiz.Models;
+using Quiz.Repository;
 
 namespace Quiz
 {
@@ -21,6 +22,10 @@ namespace Quiz
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Register the repository
+            builder.Services.AddScoped<ExamRepository>();
+            builder.Services.AddScoped<ExamQuestionsRepository>();
 
             var app = builder.Build();
 
