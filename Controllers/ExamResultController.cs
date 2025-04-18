@@ -44,6 +44,9 @@ namespace Quiz.Controllers
 
         [HttpGet("User-Results/{UserID}")]
         public IActionResult GetResultsByUserId(string UserID)
+        {
+            return Ok();
+        }
         [HttpGet("User-Results")]
         [Authorize]
         public IActionResult GetResultsByUserId()
