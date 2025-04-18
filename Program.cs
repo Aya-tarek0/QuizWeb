@@ -19,29 +19,22 @@ namespace Quiz
             builder.Services.AddDbContext<QuizContext>(option => {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("db"));
             });
-<<<<<<< HEAD
 
-            builder.Services.AddScoped<IExamResultRepository, ExamResultRepository>();
 
-=======
-<<<<<<< Updated upstream
-=======
-
+            // Register the repository
+            builder.Services.AddScoped<ExamRepository>();
+            builder.Services.AddScoped<ExamQuestionsRepository>();
             builder.Services.AddScoped<IExamResultRepository, ExamResultRepository>();
             builder.Services.AddScoped<IUserAnswerRepository, UserAnswerRepository>();
 
 
->>>>>>> Stashed changes
->>>>>>> Fahmy
             builder.Services.AddControllers();
             
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Register the repository
-            builder.Services.AddScoped<ExamRepository>();
-            builder.Services.AddScoped<ExamQuestionsRepository>();
+            
 
             var app = builder.Build();
 
