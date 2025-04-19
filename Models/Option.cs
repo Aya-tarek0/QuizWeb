@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Quiz.Models
 {
@@ -11,6 +12,7 @@ namespace Quiz.Models
 
         public string OptionText { get; set; }
 
-        public Question Question { get; set; }
+        [JsonIgnore]
+        public virtual Question? Question { get; set; }
     }
 }

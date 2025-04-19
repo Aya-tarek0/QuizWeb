@@ -4,9 +4,6 @@ namespace Quiz.Models
 {
     public class QuestionBank
     {
-     
-
-
         public int Id { get; set; }
         public string Name { get; set; }
 
@@ -18,8 +15,6 @@ namespace Quiz.Models
 
         public ApplicationUser User { get; set; }
 
-        public ICollection<Question> Questions { get; set; }
-    
-
-}
+        public ICollection<Question>? Questions { get; set; }
+    }
 }
