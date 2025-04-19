@@ -12,15 +12,15 @@ using Quiz.Models;
 namespace Quiz.Migrations
 {
     [DbContext(typeof(QuizContext))]
-    [Migration("20250415223520_sdgf")]
-    partial class sdgf
+    [Migration("20250419190154_Quz")]
+    partial class Quz
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.14")
+                .HasAnnotation("ProductVersion", "8.0.15")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -183,10 +183,6 @@ namespace Quiz.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -271,6 +267,9 @@ namespace Quiz.Migrations
                     b.Property<int>("ExamID")
                         .HasColumnType("int");
 
+                    b.Property<double>("Points")
+                        .HasColumnType("float");
+
                     b.Property<int>("QuestionID")
                         .HasColumnType("int");
 
@@ -297,7 +296,10 @@ namespace Quiz.Migrations
                     b.Property<int>("ExamID")
                         .HasColumnType("int");
 
-                    b.Property<double>("Score")
+                    b.Property<string>("FeedBack")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Score")
                         .HasColumnType("float");
 
                     b.Property<string>("UserID")
@@ -350,16 +352,12 @@ namespace Quiz.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Points")
-                        .HasColumnType("float");
-
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -380,9 +378,8 @@ namespace Quiz.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IsPrivate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsPrivate")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -408,7 +405,6 @@ namespace Quiz.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("IsCorrect")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("QuestionID")

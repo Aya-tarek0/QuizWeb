@@ -4,7 +4,7 @@ namespace Quiz.DTO
 {
     public class UserAnswerDTO
     {
-
+        public int id { set; get; }
         public int ResultID { get; set; }
 
         public string UserName { set; get; }

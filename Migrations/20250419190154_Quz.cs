@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Quiz.Migrations
 {
     /// <inheritdoc />
-    public partial class database1 : Migration
+    public partial class Quz : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,7 +30,6 @@ namespace Quiz.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -189,7 +188,7 @@ namespace Quiz.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsPrivate = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    IsPrivate = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -210,8 +209,9 @@ namespace Quiz.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ExamID = table.Column<int>(type: "int", nullable: false),
                     UserID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Score = table.Column<double>(type: "float", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Score = table.Column<double>(type: "float", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FeedBack = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -236,11 +236,10 @@ namespace Quiz.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BankID = table.Column<int>(type: "int", nullable: true),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     CorrectAnswer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Points = table.Column<double>(type: "float", nullable: false)
+                    BankID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -259,7 +258,8 @@ namespace Quiz.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     QuestionID = table.Column<int>(type: "int", nullable: false),
-                    ExamID = table.Column<int>(type: "int", nullable: false)
+                    ExamID = table.Column<int>(type: "int", nullable: false),
+                    Points = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -275,7 +275,7 @@ namespace Quiz.Migrations
                         column: x => x.QuestionID,
                         principalTable: "Questions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -295,7 +295,7 @@ namespace Quiz.Migrations
                         column: x => x.QuestionID,
                         principalTable: "Questions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -307,7 +307,7 @@ namespace Quiz.Migrations
                     ResultID = table.Column<int>(type: "int", nullable: false),
                     QuestionID = table.Column<int>(type: "int", nullable: false),
                     UserAnswerText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsCorrect = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsCorrect = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     point = table.Column<double>(type: "float", nullable: true)
                 },
                 constraints: table =>
@@ -324,7 +324,7 @@ namespace Quiz.Migrations
                         column: x => x.QuestionID,
                         principalTable: "Questions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

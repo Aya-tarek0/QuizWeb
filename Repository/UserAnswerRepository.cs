@@ -20,12 +20,14 @@ namespace Quiz.Repository
             List<UserAnswerDTO> userAnswers = quizContext.UserAnswers.Include(e=>e.Question).Include(e=>e.Result).Where(e => e.ResultID == ResultID).Select(
                 e=> new UserAnswerDTO
                 {
+                   id = e.Id,
                    ResultID = e.ResultID,
                    IsCorrect = e.IsCorrect,
                    UserAnswerText = e.UserAnswerText,
                    QuestionText = e.Question.Text,
                    UserName = e.Result.User.UserName,
-                   point =e.point
+                   point =e.point,
+                   QID = e.QuestionID
                   
                 }).ToList();
 

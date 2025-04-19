@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR.Protocol;
 using Quiz.DTO;
 using Quiz.Interface;
 using Quiz.Models;
@@ -14,11 +15,15 @@ namespace Quiz.Controllers
     {
        IUserAnswerRepository userAnswerRepository;
         IExamResultRepository examResultRepository;
+        IExamQuestionsRepository questionRepository;
+        IQuestionRepository question;
 
-        public UserAnswerController(IUserAnswerRepository userAnswerRepository , IExamResultRepository examResultRepository)
+        public UserAnswerController(IUserAnswerRepository userAnswerRepository , IExamResultRepository examResultRepository , IExamQuestionsRepository questionRepository , IQuestionRepository question )
         {
             this.examResultRepository = examResultRepository;
             this.userAnswerRepository = userAnswerRepository;
+            this.questionRepository = questionRepository;
+            this.question = question;
         }
 
         #region Get Answers For Result
@@ -103,6 +108,7 @@ namespace Quiz.Controllers
         }
         #endregion
 
+        #region Calculate Score
         [HttpPut("CalculateScore/{resultId:int}")]
         public IActionResult CalculateScore(int resultId)
         {
@@ -117,7 +123,7 @@ namespace Quiz.Controllers
             var result = examResultRepository.GetById(resultId);
             if (result == null)
             {
-                return NotFound("Result not found.");
+                return BadRequest("Result not found.");
             }
 
             result.Score = totalPoints;
@@ -126,6 +132,65 @@ namespace Quiz.Controllers
 
             return Ok(new { Message = "Score calculated and updated.", TotalPoints = totalPoints });
         }
+
+        #endregion
+
+        #region Auto Correct 
+        [HttpPut("AutoCorrect/{resultId:int}")]
+        public IActionResult AutoCorrect(int resultId)
+        {
+            var answers = userAnswerRepository.GetAnswersForResult(resultId);
+            if (answers == null || answers.Count == 0)
+            {
+                return NotFound("No answers found for this result.");
+            }
+
+            int correctedCount = 0;
+
+            foreach (var dto in answers)
+            {
+                var answer = userAnswerRepository.GetById(dto.id); 
+                if (answer == null)
+                {
+                    BadRequest("Answer Not Fount");
+                }
+
+                var question = questionRepository.GetById(answer.QuestionID);
+                if (question == null)
+                {
+                    return BadRequest($"Question not found.");
+                }
+
+                string userAnswerText = answer.UserAnswerText?.Trim().ToLower();
+                string correctAnswerText = question.Question.CorrectAnswer?.Trim().ToLower();
+
+                if (userAnswerText == correctAnswerText)
+                {
+                    answer.IsCorrect = "true";
+                    answer.point = question.Points;
+                }
+                else
+                {
+                    answer.IsCorrect = "false";
+                    answer.point = 0;
+                }
+
+                userAnswerRepository.Update(answer.Id, answer); 
+                correctedCount++;
+            }
+
+            userAnswerRepository.Save();
+
+
+            return Ok(new
+            {
+                Message = "Correction Completed",
+                TotalAnswers = answers.Count,
+                CorrectedAnswers = correctedCount,
+            });
+        }
+
+        #endregion
 
 
     }
