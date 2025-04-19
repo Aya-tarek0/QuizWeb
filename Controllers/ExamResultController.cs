@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using Quiz.DTO;
@@ -22,10 +24,11 @@ namespace Quiz.Controllers
         #region Get All ExamResults To Creator
 
         [HttpGet("{ExamID:int}")]
-
-        public IActionResult GetAll(int ExamID, string UserId)
+        [Authorize]
+        public IActionResult GetAll(int ExamID)
 
         {
+            var UserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             List<ResultDTO> examResults = examResultRepository.GetAllResultsForExam()
                                                               .Where(e => e.ExamID == ExamID && e.CreatorID == UserId)
                                                               .ToList();
@@ -41,7 +44,12 @@ namespace Quiz.Controllers
 
         [HttpGet("User-Results/{UserID}")]
         public IActionResult GetResultsByUserId(string UserID)
+        [HttpGet("User-Results")]
+        [Authorize]
+        public IActionResult GetResultsByUserId()
         {
+            var UserID = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
             List<ResultDTO> result = examResultRepository.GetResultByUserId().Where(e => e.userid == UserID).ToList();
 
             return Ok(result);
@@ -51,9 +59,12 @@ namespace Quiz.Controllers
 
 
         #region Get One Result To User
-        [HttpGet("OneResult/{UserID}")]
-        public IActionResult GetResultByUser(string UserID, int ExamID)
+        [HttpGet("OneResult")]
+        [Authorize]
+        public IActionResult GetResultByUser(int ExamID)
         {
+            var UserID = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
             ResultDTO result = examResultRepository.GetOneResultByUserID(UserID, ExamID);
             return Ok(result);
         }
