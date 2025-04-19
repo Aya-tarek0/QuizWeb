@@ -41,9 +41,6 @@ namespace Quiz.Controllers
 
 
         #region Get Results To User
-
-        [HttpGet("User-Results/{UserID}")]
-        public IActionResult GetResultsByUserId(string UserID)
         [HttpGet("User-Results")]
         [Authorize]
         public IActionResult GetResultsByUserId()
