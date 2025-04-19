@@ -15,5 +15,7 @@ namespace Quiz.DTO
         public string? IsCorrect { get; set; }
 
         public double? point { set; get; }
+
+        
     }
 }

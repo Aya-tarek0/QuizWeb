@@ -1,6 +1,10 @@
 
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Quiz.Interface;
 using Quiz.Models;
 using Quiz.Repository;
@@ -20,6 +24,37 @@ namespace Quiz
                 option.UseSqlServer(builder.Configuration.GetConnectionString("db"));
             });
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer= builder.Configuration["JWT:Iss"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JWT:Aud"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+                };
+            });
+
+            builder.Services.AddScoped<IExamResultRepository, ExamResultRepository>();
+            builder.Services.AddScoped<IQuestionBankRepository, QuestionBankRepository>();
+            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+            builder.Services.AddScoped<IOptionRepository, OptionRepository>();
+
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                });
 
             // Register the repository
             builder.Services.AddScoped<ExamRepository>();
@@ -45,6 +80,7 @@ namespace Quiz
                 app.UseSwaggerUI();
             }
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
@@ -52,5 +88,6 @@ namespace Quiz
 
             app.Run();
         }
+
     }
 }
