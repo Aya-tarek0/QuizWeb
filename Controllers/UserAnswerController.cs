@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Quiz.DTO;
 using Quiz.Interface;
@@ -12,9 +13,11 @@ namespace Quiz.Controllers
     public class UserAnswerController : ControllerBase
     {
        IUserAnswerRepository userAnswerRepository;
+        IExamResultRepository examResultRepository;
 
-        public UserAnswerController(IUserAnswerRepository userAnswerRepository)
+        public UserAnswerController(IUserAnswerRepository userAnswerRepository , IExamResultRepository examResultRepository)
         {
+            this.examResultRepository = examResultRepository;
             this.userAnswerRepository = userAnswerRepository;
         }
 
@@ -99,6 +102,30 @@ namespace Quiz.Controllers
             return NoContent();
         }
         #endregion
+
+        [HttpPut("CalculateScore/{resultId:int}")]
+        public IActionResult CalculateScore(int resultId)
+        {
+            var answers = userAnswerRepository.GetAnswersForResult(resultId);
+            if (answers == null || answers.Count == 0)
+            {
+                return NotFound("No answers found for this result.");
+            }
+
+           double totalPoints = (double)answers.Sum(a => a.point);
+
+            var result = examResultRepository.GetById(resultId);
+            if (result == null)
+            {
+                return NotFound("Result not found.");
+            }
+
+            result.Score = totalPoints;
+            examResultRepository.Update(resultId, result);
+            examResultRepository.Save();
+
+            return Ok(new { Message = "Score calculated and updated.", TotalPoints = totalPoints });
+        }
 
 
     }

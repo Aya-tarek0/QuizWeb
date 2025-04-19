@@ -24,7 +24,9 @@ namespace Quiz.Repository
                    IsCorrect = e.IsCorrect,
                    UserAnswerText = e.UserAnswerText,
                    QuestionText = e.Question.Text,
-                   UserName = e.Result.User.UserName
+                   UserName = e.Result.User.UserName,
+                   point =e.point
+                  
                 }).ToList();
 
             return userAnswers;
