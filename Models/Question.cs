@@ -15,6 +15,7 @@ namespace Quiz.Models
         public int? BankID { get; set; }
         public QuestionBank QuestionBank { get; set; }
 
+
         [JsonIgnore]
         public virtual ICollection<Option>? Options { get; set; }
         public virtual ICollection<ExamQuestion>? ExamQuestions { get; set; }

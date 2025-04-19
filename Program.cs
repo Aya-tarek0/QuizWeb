@@ -1,7 +1,13 @@
 
+<<<<<<< HEAD
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+=======
 using System.Text.Json.Serialization;
+>>>>>>> c69ea66bcdfe1a7d6f80024ce1eb28ded3ad042e
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Quiz.Interface;
 using Quiz.Models;
 using Quiz.Repository;
@@ -21,11 +27,34 @@ namespace Quiz
                 option.UseSqlServer(builder.Configuration.GetConnectionString("db"));
             });
 
-<<<<<<< HEAD
-=======
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer= builder.Configuration["JWT:Iss"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JWT:Aud"],
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
+                };
+            });
+
             builder.Services.AddScoped<IExamResultRepository, ExamResultRepository>();
+<<<<<<< HEAD
+            builder.Services.AddScoped<IQuestionBankRepository, QuestionBankRepository>();
+=======
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IOptionRepository, OptionRepository>();
+>>>>>>> c69ea66bcdfe1a7d6f80024ce1eb28ded3ad042e
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -63,6 +92,7 @@ namespace Quiz
                 app.UseSwaggerUI();
             }
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
@@ -70,5 +100,6 @@ namespace Quiz
 
             app.Run();
         }
+
     }
 }

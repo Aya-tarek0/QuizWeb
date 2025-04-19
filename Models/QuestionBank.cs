@@ -11,10 +11,16 @@ namespace Quiz.Models
         public string UserID { get; set; }
 
         public string Category { get; set; }
-        public string IsPrivate { get; set; }
+        public bool IsPrivate { get; set; }
 
         public ApplicationUser User { get; set; }
 
         public ICollection<Question>? Questions { get; set; }
+<<<<<<< HEAD
+    
+
+}
+=======
     }
+>>>>>>> c69ea66bcdfe1a7d6f80024ce1eb28ded3ad042e
 }
