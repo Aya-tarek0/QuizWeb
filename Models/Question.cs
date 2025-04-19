@@ -15,8 +15,8 @@ namespace Quiz.Models
 
         public QuestionBank QuestionBank { get; set; }
 
-        public ICollection<Option> Options { get; set; }
-        public ICollection<ExamQuestion> ExamQuestions { get; set; }
-        public ICollection<UserAnswer> UsersAnswers { get; set; }
+        public ICollection<Option>? Options { get; set; }
+        public ICollection<ExamQuestion>? ExamQuestions { get; set; }
+        public ICollection<UserAnswer>? UsersAnswers { get; set; }
     }
 }
