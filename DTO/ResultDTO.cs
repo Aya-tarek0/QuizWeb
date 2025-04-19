@@ -1,4 +1,6 @@
-﻿namespace Quiz.DTO
+﻿using Quiz.Models;
+
+namespace Quiz.DTO
 {
     public class ResultDTO
     {
@@ -17,6 +19,7 @@
 
         public string CreatorID { set; get; }
         
+        public  ICollection<UserAnswer>? userAnswers { set; get; }
 
 
     }

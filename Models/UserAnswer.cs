@@ -13,7 +13,7 @@ namespace Quiz.Models
         public int QuestionID { get; set; }
 
         public string UserAnswerText { get; set; }
-        public string IsCorrect { get; set; }
+        public string? IsCorrect { get; set; }
 
         public double? point { set; get; }
 
