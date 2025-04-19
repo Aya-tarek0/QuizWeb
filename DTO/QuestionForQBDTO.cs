@@ -6,7 +6,7 @@ namespace Quiz.DTO
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public string? Type { get; set; }
+        public QuestionType Type { get; set; }
         public string? CorrectAnswer { get; set; }
     }
 }
