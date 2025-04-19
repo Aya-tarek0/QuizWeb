@@ -16,6 +16,7 @@ namespace Quiz.Models
         public ApplicationUser User { get; set; }
 
         public ICollection<Question>? Questions { get; set; }
+<<<<<<< HEAD
 
     
 
@@ -24,3 +25,11 @@ namespace Quiz.Models
     }
 
 
+=======
+    
+
+
+
+    }
+}
+>>>>>>> 5688410f72673af4d1142f9c5cc61d76a5e4ef0d
