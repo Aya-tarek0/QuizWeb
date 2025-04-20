@@ -33,5 +33,16 @@ namespace Quiz.Repository
 
             return userAnswers;
         }
+
+        #region Get By ID Inculde
+        public UserAnswer GetById(int id)
+        {
+            return quizContext.UserAnswers
+                           .Include(r => r.Result)
+                           .ThenInclude(e => e.Exam)
+                           .FirstOrDefault(r => r.Id == id);
+        }
+
+        #endregion
     }
 }

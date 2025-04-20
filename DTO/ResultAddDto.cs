@@ -2,7 +2,7 @@
 {
     public class ResultAddDto
     {
-        public string userid { set; get; }
+        public string? userid { set; get; }
 
         public int ExamID { set; get; }
 

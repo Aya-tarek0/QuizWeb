@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Quiz.Migrations
 {
     /// <inheritdoc />
-    public partial class Quz : Migration
+    public partial class newdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -248,7 +248,8 @@ namespace Quiz.Migrations
                         name: "FK_Questions_QuestionBanks_BankID",
                         column: x => x.BankID,
                         principalTable: "QuestionBanks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -295,7 +296,7 @@ namespace Quiz.Migrations
                         column: x => x.QuestionID,
                         principalTable: "Questions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

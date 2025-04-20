@@ -6,11 +6,14 @@ using Microsoft.Identity.Client;
 using Quiz.DTO;
 using Quiz.Interface;
 using Quiz.Models;
+using Quiz.Repository;
 
 namespace Quiz.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+        #region Injection
     public class ExamResultController : ControllerBase
     {
         IExamResultRepository examResultRepository;
@@ -19,6 +22,7 @@ namespace Quiz.Controllers
         {
             this.examResultRepository = examResultRepository;
         }
+        #endregion
 
 
         #region Get All ExamResults To Creator
@@ -57,7 +61,7 @@ namespace Quiz.Controllers
 
 
         #region Get One Result To User
-        [HttpGet("OneResult")]
+        [HttpGet("OneResult/{ExamID}")]
         [Authorize]
         public IActionResult GetResultByUser(int ExamID)
         {
@@ -72,9 +76,11 @@ namespace Quiz.Controllers
 
         #region Add Result
         [HttpPost]
-
+        [Authorize]
         public IActionResult AddResult([FromBody] ResultAddDto NewResult)
         {
+            var UserID = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -84,7 +90,7 @@ namespace Quiz.Controllers
             ExamResult examResult = new ExamResult
             {
                 ExamID = NewResult.ExamID,
-                UserID = NewResult.userid,
+                UserID =UserID,
                 Date = NewResult.date,
 
 
@@ -99,7 +105,8 @@ namespace Quiz.Controllers
 
 
         #region Update Result
-        [HttpPut]
+        [HttpPut("{id:int}")]
+        [Authorize]
         public IActionResult UpdateResult(int id, [FromBody] ResultUpdateDTO NewResult)
         {
             if (!ModelState.IsValid)
@@ -110,6 +117,12 @@ namespace Quiz.Controllers
             if (result == null)
             {
                 return NotFound("Result Not Found");
+            }
+            var UserID = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (User == null || User.Identity == null || result.Exam.CreatedBy != UserID) 
+                {
+                return Unauthorized("Not allowed"); 
             }
 
             result.Score = NewResult.score;
@@ -125,15 +138,27 @@ namespace Quiz.Controllers
         #endregion
 
 
-
         #region Delete Result
+
         [HttpDelete("{id:int}")]
         public IActionResult DeleteResult(int id)
         {
             var result = examResultRepository.GetById(id);
+
             if (result == null)
             {
                 return NotFound($"Result with ID {id} not found.");
+            }
+
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            bool isUser = result.UserID == currentUserId;
+
+            bool isExamCreator =result.Exam.CreatedBy== currentUserId;
+
+            if (!isUser && !isExamCreator)
+            {
+                return Unauthorized("Not allowed");
             }
 
             examResultRepository.Remove(id);
@@ -141,7 +166,8 @@ namespace Quiz.Controllers
 
             return NoContent();
         }
-        #endregion
+
+#endregion
 
 
 

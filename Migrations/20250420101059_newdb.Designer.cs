@@ -12,8 +12,8 @@ using Quiz.Models;
 namespace Quiz.Migrations
 {
     [DbContext(typeof(QuizContext))]
-    [Migration("20250419190154_Quz")]
-    partial class Quz
+    [Migration("20250420101059_newdb")]
+    partial class newdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

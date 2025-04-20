@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 
-=======
->>>>>>> 5688410f72673af4d1142f9c5cc61d76a5e4ef0d
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text.Json.Serialization;
@@ -40,7 +37,7 @@ namespace Quiz
                 {
                     ValidateIssuer = true,
                     ValidIssuer= builder.Configuration["JWT:Iss"],
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidAudience = builder.Configuration["JWT:Aud"],
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
@@ -52,6 +49,8 @@ namespace Quiz
             builder.Services.AddScoped<IQuestionBankRepository, QuestionBankRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IOptionRepository, OptionRepository>();
+            builder.Services.AddScoped<IExamQuestionsRepository, ExamQuestionsRepository>();
+
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -59,19 +58,15 @@ namespace Quiz
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
-<<<<<<< HEAD
 
 
             builder.Services.AddControllers();
-            
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-=======
+
             builder.Services.AddScoped<IExamResultRepository, ExamResultRepository>();
             builder.Services.AddScoped<IUserAnswerRepository, UserAnswerRepository>();
 
             builder.Services.AddControllers();
          
->>>>>>> 5688410f72673af4d1142f9c5cc61d76a5e4ef0d
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

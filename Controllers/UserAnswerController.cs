@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Protocol;
@@ -11,6 +12,8 @@ namespace Quiz.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
+        #region Injection
     public class UserAnswerController : ControllerBase
     {
        IUserAnswerRepository userAnswerRepository;
@@ -26,9 +29,12 @@ namespace Quiz.Controllers
             this.question = question;
         }
 
+        #endregion
+
         #region Get Answers For Result
 
-        [HttpGet]
+        [HttpGet("{ResultID}")]
+        [Authorize]
         public IActionResult GetAnswers(int ResultID)
         {
             List<UserAnswerDTO> userAnswers = userAnswerRepository.GetAnswersForResult(ResultID);
@@ -39,7 +45,7 @@ namespace Quiz.Controllers
 
         #region Add Answer
         [HttpPost]
-
+        [Authorize]
         public IActionResult AddAnswers([FromBody] AnswerAddDTO NewAnswer)
         {
             if (!ModelState.IsValid)
@@ -66,23 +72,30 @@ namespace Quiz.Controllers
         #endregion
 
         #region Update Point & IsCorrect
-        [HttpPut]
+        [HttpPut("{id}")]
+        [Authorize]
         public IActionResult UpdateAnswer(int id, [FromBody] AnswerUpdateDTO NewResult)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var result = userAnswerRepository.GetById(id);
             if (result == null)
             {
                 return NotFound("Answer Not Found");
             }
 
+            var UserID = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (UserID != result.Result.Exam.CreatedBy)
+            {
+                return Unauthorized("You are not authorized to correct this question.");
+            }
+
             result.IsCorrect = NewResult.IsCorrect;
             result.point = NewResult.point;
-
-
 
             userAnswerRepository.Update(id, result);
             userAnswerRepository.Save();
@@ -91,14 +104,21 @@ namespace Quiz.Controllers
         }
         #endregion
 
+
         #region Delete Answer
         [HttpDelete("{id:int}")]
+        [Authorize]
         public IActionResult DeleteAnswer(int id)
         {
             var result = userAnswerRepository.GetById(id);
             if (result == null)
             {
                 return NotFound($"Answer with ID {id} not found.");
+            }
+            var UserID = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (UserID != result.Result.UserID)
+            {
+                return Unauthorized("You are not authorized to delete The Answer");
             }
 
             userAnswerRepository.Remove(id);
@@ -110,6 +130,7 @@ namespace Quiz.Controllers
 
         #region Calculate Score
         [HttpPut("CalculateScore/{resultId:int}")]
+        [Authorize]
         public IActionResult CalculateScore(int resultId)
         {
             var answers = userAnswerRepository.GetAnswersForResult(resultId);
@@ -125,6 +146,12 @@ namespace Quiz.Controllers
             {
                 return BadRequest("Result not found.");
             }
+            var UserID = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (UserID != result.Exam.CreatedBy)
+            {
+                return Unauthorized("You are not authorized to correct The Exam.");
+            }
 
             result.Score = totalPoints;
             examResultRepository.Update(resultId, result);
@@ -137,8 +164,21 @@ namespace Quiz.Controllers
 
         #region Auto Correct 
         [HttpPut("AutoCorrect/{resultId:int}")]
+        [Authorize]
         public IActionResult AutoCorrect(int resultId)
         {
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            var result = examResultRepository.GetById(resultId);
+            if (result == null || result.Exam == null)
+            {
+                return NotFound("Result or Exam not found.");
+            }
+            if (result.Exam.CreatedBy != userId)
+            {
+                return Unauthorized("Only the creator of the exam can perform auto-correction.");
+            }
             var answers = userAnswerRepository.GetAnswersForResult(resultId);
             if (answers == null || answers.Count == 0)
             {
@@ -155,19 +195,22 @@ namespace Quiz.Controllers
                     BadRequest("Answer Not Fount");
                 }
 
-                var question = questionRepository.GetById(answer.QuestionID);
-                if (question == null)
+                var qu = question.GetById(answer.QuestionID);
+                var quPoint = questionRepository.GetById(answer.QuestionID);
+
+                if (qu == null)
                 {
                     return BadRequest($"Question not found.");
                 }
 
                 string userAnswerText = answer.UserAnswerText?.Trim().ToLower();
-                string correctAnswerText = question.Question.CorrectAnswer?.Trim().ToLower();
+                string correctAnswerText = qu?.CorrectAnswer.Trim().ToLower();
 
                 if (userAnswerText == correctAnswerText)
                 {
                     answer.IsCorrect = "true";
-                    answer.point = question.Points;
+                    answer.point = quPoint.Points;
+                    correctedCount++;
                 }
                 else
                 {
@@ -176,7 +219,7 @@ namespace Quiz.Controllers
                 }
 
                 userAnswerRepository.Update(answer.Id, answer); 
-                correctedCount++;
+                
             }
 
             userAnswerRepository.Save();
@@ -186,7 +229,7 @@ namespace Quiz.Controllers
             {
                 Message = "Correction Completed",
                 TotalAnswers = answers.Count,
-                CorrectedAnswers = correctedCount,
+                CorrectAnswers = correctedCount,
             });
         }
 
