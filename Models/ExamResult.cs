@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Quiz.Models
 {
@@ -16,6 +17,8 @@ namespace Quiz.Models
         public DateTime Date { get; set; }
 
         public string? FeedBack { set; get; }
+
+        [JsonIgnore]
         public Exam Exam { get; set; }
         public ApplicationUser User { get; set; }
 

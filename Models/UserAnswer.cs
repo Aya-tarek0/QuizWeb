@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Quiz.Models
 {
@@ -16,7 +17,7 @@ namespace Quiz.Models
         public string? IsCorrect { get; set; }
 
         public double? point { set; get; }
-
+        [JsonIgnore]
         public ExamResult Result { get; set; }
         public Question Question { get; set; }
 

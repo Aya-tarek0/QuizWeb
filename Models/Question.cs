@@ -12,8 +12,8 @@ namespace Quiz.Models
         public string CorrectAnswer { get; set; }
 
         [ForeignKey("QuestionBank")]
-        public int? BankID { get; set; }
-        public QuestionBank QuestionBank { get; set; }
+        public int BankID { get; set; }
+        public QuestionBank? QuestionBank { get; set; }
 
 
         [JsonIgnore]

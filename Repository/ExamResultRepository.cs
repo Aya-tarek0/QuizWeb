@@ -86,7 +86,15 @@ namespace Quiz.Repository
 
         #endregion
 
-       
+        #region Get By ID Inculde
+        public ExamResult GetById(int id)
+        {
+            return quizContext.ExamResults
+                           .Include(r => r.Exam)
+                           .FirstOrDefault(r => r.Id == id);
+        }
+
+        #endregion
 
 
 

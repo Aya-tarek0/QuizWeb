@@ -17,7 +17,11 @@ namespace Quiz.Models
 
         public ICollection<Question>? Questions { get; set; }
 
+    
+
+    
+
+
 
     }
 }
-

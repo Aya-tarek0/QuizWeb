@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Quiz.Interface;
 using Quiz.Models;
 
 namespace Quiz.Repository
 {
-    public class ExamQuestionsRepository : GenericRepository<ExamQuestion>
+    public class ExamQuestionsRepository : GenericRepository<ExamQuestion> ,IExamQuestionsRepository
     {
         private readonly QuizContext context;
         public ExamQuestionsRepository(QuizContext context) : base(context)

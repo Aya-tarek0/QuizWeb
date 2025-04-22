@@ -26,7 +26,7 @@ namespace Quiz.Controllers
             return Ok(exams);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}"), Authorize]
         public IActionResult Get(int id)
         {
             Exam? exam = examRepository.GetById(id);
@@ -38,8 +38,7 @@ namespace Quiz.Controllers
             return Ok(exam);
         }
 
-
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult Post([FromBody] ExamDTO examFromRequest)
         {
             
@@ -60,7 +59,7 @@ namespace Quiz.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize]
         public IActionResult Put(int id, [FromBody] ExamDTO examFromRequest)
         {
             Exam? exam = examRepository.GetById(id);
@@ -81,7 +80,7 @@ namespace Quiz.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}"), Authorize]
         public IActionResult Delete(int id)
         {
             var exam = examRepository.GetById(id);

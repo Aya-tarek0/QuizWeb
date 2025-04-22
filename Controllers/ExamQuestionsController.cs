@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Quiz.DTO;
 using Quiz.Models;
@@ -9,6 +10,7 @@ namespace Quiz.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ExamQuestionsController : ControllerBase
     {
         private readonly ExamQuestionsRepository examQuestionRepository;
