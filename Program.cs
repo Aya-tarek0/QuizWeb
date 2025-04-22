@@ -37,7 +37,7 @@ namespace Quiz
                 {
                     ValidateIssuer = true,
                     ValidIssuer= builder.Configuration["JWT:Iss"],
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidAudience = builder.Configuration["JWT:Aud"],
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
@@ -49,6 +49,8 @@ namespace Quiz
             builder.Services.AddScoped<IQuestionBankRepository, QuestionBankRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IOptionRepository, OptionRepository>();
+            builder.Services.AddScoped<IExamQuestionsRepository, ExamQuestionsRepository>();
+
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -56,16 +58,16 @@ namespace Quiz
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
 
-            // Register the repository
-            builder.Services.AddScoped<ExamRepository>();
-            builder.Services.AddScoped<ExamQuestionsRepository>();
+
+
+            builder.Services.AddControllers();
+
             builder.Services.AddScoped<IExamResultRepository, ExamResultRepository>();
             builder.Services.AddScoped<IUserAnswerRepository, UserAnswerRepository>();
 
 
             builder.Services.AddControllers();
-            
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+         
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

@@ -134,12 +134,13 @@ namespace Quiz.Repository
 
         QuestionBank IGenericRepository<QuestionBank>.GetById(int Id)
         {
-            throw new NotImplementedException();
+            return quizContext.QuestionBanks.Include(q => q.User).FirstOrDefault(q => q.Id == Id);
         }
 
         public void Update(int id, QuestionBank obj)
         {
             throw new NotImplementedException();
         }
+
     }
 }
