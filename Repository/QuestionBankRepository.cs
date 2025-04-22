@@ -36,7 +36,7 @@ namespace Quiz.Repository
                     {
                         Id = c.Id,
                         Text = c.Text,
-                        Type=c.Type,
+                        Type = c.Type.ToString(),
                         CorrectAnswer = c.CorrectAnswer
                     }).ToList()
                 });
@@ -62,7 +62,7 @@ namespace Quiz.Repository
                 {
                     Id = c.Id,
                     Text = c.Text,
-                    Type = c.Type,
+                    Type = c.Type.ToString(),
                     CorrectAnswer = c.CorrectAnswer
                 }).ToList()
             };
@@ -85,7 +85,7 @@ namespace Quiz.Repository
                 {
                     Id = c.Id,
                     Text = c.Text,
-                    Type = c.Type,
+                    Type = c.Type.ToString(),
                     CorrectAnswer = c.CorrectAnswer
                 }).ToList()
             };
